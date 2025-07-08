@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  version: 1.0.0
+  description: API for creating, retrieving, and deleting users
+
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags: [User Management]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                  example: Alice Johnson
+                email:
+                  type: string
+                  format: email
+                  example: alice@example.com
+      responses:
+        '201':
+          description: User created successfully
+      x-mcp:
+        intent: create_user
+        description: Creates a new user in the system
+        parameters:
+          - name: name
+            type: string
+            required: true
+          - name: email
+            type: string
+            required: true
+        safety:
+          requiredAuth: true
+          readOnly: false
+
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      operationId: getUser
+      tags: [User Management]
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: 12345
+      responses:
+        '200':
+          description: Returns user details
+        '404':
+          description: User not found
+      x-mcp:
+        intent: get_user
+        description: Retrieve a user by ID
+        parameters:
+          - name: userId
+            type: string
+            required: true
+        safety:
+          requiredAuth: true
+          readOnly: true
+
+    delete:
+      summary: Delete user by ID
+      operationId: deleteUser
+      tags: [User Management]
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+      x-mcp:
+        intent: delete_user
+        description: Deletes a user by ID
+        parameters:
+          - name: userId
+            type: string
+            required: true
+        safety:
+          requiredAuth: true
+          readOnly: false
